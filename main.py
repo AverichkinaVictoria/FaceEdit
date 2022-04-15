@@ -100,9 +100,8 @@ if __name__ == '__main__':
 
 
     parser.add_argument('--test_input_choice', type=str, default='text',choices=['text', 'attrs'])
-    parser.add_argument('--test_input_text', type=str, default='Я хочу изменить свою внешность. Волосы перекрасить в черный, пол оставить женским, и увидеть себя в старости.')
-    #parser.add_argument('--test_input_text', type=str,
-                   #     default='I wanna change my appearance. The hair should be blackish, sex remains woman, and i wanna see myself aged.')
+    #parser.add_argument('--test_input_text', type=str, default='Я хочу изменить свою внешность. Волосы перекрасить в светлый, пол оставить женским, и увидеть себя в старости.')
+    parser.add_argument('--test_input_text', type=str,default='I wanna change my appearance. The hair should be blonde, sex remains women, and i wanna see myself young.')
     parser.add_argument('--test_img_path', type=str, default='test')
     parser.add_argument('--test_img_name', type=str, default='test.jpg')
     parser.add_argument('--test_img_attrs', type=str, default=[1,0,0,0,1])

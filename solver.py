@@ -27,6 +27,8 @@ from langdetect import detect
 import pymorphy2
 from nltk.stem import WordNetLemmatizer
 
+import json
+
 
 class Solver(object):
     """Solver for training and testing StarGAN."""
@@ -447,13 +449,50 @@ class Solver(object):
         return newImg
 
 
+    def tokenToVector(self, tokens, language):
+        vector_default = [1, 0, 0, 0, 1]
+        f = open('tokensSynonymDictionary.json')
+        data = json.load(f)
+        data_syn = data['english']
+        if language == 'russian':
+            data_syn = data['russian']
+            print("THIS IS RUSSIAN>>>")
+        else:
+            data_syn = data['english']
+            print("THIS IS ENGLISH>>>")
+        for token in tokens:
+            if token in data_syn['black']:
+                vector_default[0] = 1
+                vector_default[1] = 0
+                vector_default[2] = 0
+            elif token in data_syn['brown']:
+                vector_default[0] = 0
+                vector_default[1] = 0
+                vector_default[2] = 1
+            elif token in data_syn['blonde']:
+                vector_default[0] = 0
+                vector_default[1] = 1
+                vector_default[2] = 0
+            elif token in data_syn['young']:
+                vector_default[4] = 1
+            elif token in data_syn['aged']:
+                vector_default[4] = 0
+            elif token in data_syn['male']:
+                vector_default[3] = 1
+            elif token in data_syn['female']:
+                vector_default[3] = 0
+
+        return vector_default
+
     def getAttrsFromText(self):
-        attrs_default = [1,0,0,0,1]
+        #attrs_default = [1,0,0,0,1]
         print(self.test_input_text)
         nltk.download('punkt')
         nltk.download('stopwords')
+        language = 'russian'
         if detect(self.test_input_text) == 'ru':
             print('RUSSIAN>>>')
+            language = 'russian'
             morph = pymorphy2.MorphAnalyzer()
             tokens = word_tokenize(self.test_input_text.lower(), language="russian")
             print('TOKENS>>>', tokens)
@@ -467,6 +506,7 @@ class Solver(object):
 
         else:
             print('ENGLISH>>>')
+            language = 'english'
             tokens = word_tokenize(self.test_input_text.lower(), language="english")
             print('TOKENS>>>', tokens)
             stop_words = stopwords.words("english")
@@ -478,6 +518,7 @@ class Solver(object):
                 if (token not in stop_words) & (token not in string.punctuation):
                     filtered_tokens.append(lemmatizer.lemmatize(token))
             print('FILTERED>>>', filtered_tokens)
+        attrs_default = self.tokenToVector(filtered_tokens, language)
         return attrs_default
 
     def test(self):
@@ -549,10 +590,10 @@ class Solver(object):
                 c_trg_m = torch.FloatTensor(c_trg_m)
                 c_trg_m.to(self.device)
                 print("C TARGET M>>>", c_trg_m)
-                # x_fake_list.append(self.G(x_real, c_trg_m))
-                #
-                # # Save the translated images.
-                # x_concat = torch.cat(x_fake_list, dim=3)
-                # result_path = os.path.join(self.result_dir, 'test-images.jpg')
-                # save_image(self.denorm(x_concat.data.cpu()), result_path, nrow=1, padding=0)
-                # print('Saved real and fake images into {}...'.format(result_path))
+                x_fake_list.append(self.G(x_real, c_trg_m))
+
+                # Save the translated images.
+                x_concat = torch.cat(x_fake_list, dim=3)
+                result_path = os.path.join(self.result_dir, 'test-images.jpg')
+                save_image(self.denorm(x_concat.data.cpu()), result_path, nrow=1, padding=0)
+                print('Saved real and fake images into {}...'.format(result_path))
