@@ -12,7 +12,7 @@
 
 
 
-[![python main.py --test_input_choice attrs --test_img_path test --test_img_name test.jpg --test_img_attrs 1 0 0 0 1](https://img.shields.io/badge/Lib.rs-lightgrey?style=for-the-badge)](https://lib.rs/crates/redant)
+[![python main.py --test_input_choice attrs --test_img_path test --test_img_name test.jpg --test_img_attrs 1 0 0 0 1](https://img.shields.io/badge/Lib.rs-lightgrey?style=for-the-badge)](python main.py --test_input_choice attrs --test_img_path test --test_img_name test.jpg --test_img_attrs 1 0 0 0 1)
 
 
 ![Alt text](https://github.com/AverichkinaVictoria/FaceEdit/blob/dev/Screenshots/1.png)
