@@ -42,7 +42,7 @@ class Solver(object):
 
         # Model configurations.
         self.c_dim = config.c_dim
-        self.c2_dim = config.c2_dim
+        # self.c2_dim = config.c2_dim
         self.image_size = config.image_size
         self.g_conv_dim = config.g_conv_dim
         self.d_conv_dim = config.d_conv_dim
@@ -74,11 +74,11 @@ class Solver(object):
         self.test_input_text = config.test_input_text
 
         # Miscellaneous.
-        self.use_tensorboard = config.use_tensorboard
+        # self.use_tensorboard = config.use_tensorboard
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
         # Directories.
-        self.log_dir = config.log_dir
+        # self.log_dir = config.log_dir
         self.sample_dir = config.sample_dir
         self.model_save_dir = config.model_save_dir
         self.result_dir = config.result_dir
@@ -91,8 +91,8 @@ class Solver(object):
 
         # Build the model and tensorboard.
         self.build_model()
-        if self.use_tensorboard:
-            self.build_tensorboard()
+        # if self.use_tensorboard:
+        #     self.build_tensorboard()
 
     def build_model(self):
         """Create a generator and a discriminator."""
@@ -453,13 +453,10 @@ class Solver(object):
         vector_default = [1, 0, 0, 0, 1]
         f = open('tokensSynonymDictionary.json')
         data = json.load(f)
-        data_syn = data['english']
         if language == 'russian':
             data_syn = data['russian']
-            print("THIS IS RUSSIAN>>>")
         else:
             data_syn = data['english']
-            print("THIS IS ENGLISH>>>")
         for token in tokens:
             if token in data_syn['black']:
                 vector_default[0] = 1
@@ -485,30 +482,20 @@ class Solver(object):
         return vector_default
 
     def getAttrsFromText(self):
-        #attrs_default = [1,0,0,0,1]
-        print(self.test_input_text)
         nltk.download('punkt')
         nltk.download('stopwords')
-        language = 'russian'
         if detect(self.test_input_text) == 'ru':
-            print('RUSSIAN>>>')
             language = 'russian'
             morph = pymorphy2.MorphAnalyzer()
             tokens = word_tokenize(self.test_input_text.lower(), language="russian")
-            print('TOKENS>>>', tokens)
             stop_words = stopwords.words("russian")
             filtered_tokens = []
             for token in tokens:
                 if (token not in stop_words) & (token not in string.punctuation):
                     filtered_tokens.append(morph.parse(token)[0].normal_form)
-            print('FILTERED>>>', filtered_tokens)
-
-
         else:
-            print('ENGLISH>>>')
             language = 'english'
             tokens = word_tokenize(self.test_input_text.lower(), language="english")
-            print('TOKENS>>>', tokens)
             stop_words = stopwords.words("english")
             filtered_tokens = []
             nltk.download('wordnet')
@@ -517,7 +504,6 @@ class Solver(object):
             for token in tokens:
                 if (token not in stop_words) & (token not in string.punctuation):
                     filtered_tokens.append(lemmatizer.lemmatize(token))
-            print('FILTERED>>>', filtered_tokens)
         attrs_default = self.tokenToVector(filtered_tokens, language)
         return attrs_default
 
@@ -537,9 +523,9 @@ class Solver(object):
             #for i, (x_real, c_org) in enumerate(data_loader):
 
                 # Prepare input images and target domain labels.
-                image_inp = Image.open(os.path.join(self.test_img_path, self.test_img_name))
+                #image_inp = Image.open(os.path.join(self.test_img_path, self.test_img_name))
 
-                image = io.imread(os.path.join(self.test_img_path, self.test_img_name))
+                image = io.imread('test.jpg')
                 if image.ndim == 2:
                     image = color.gray2rgb(image)
                 elif image.shape[-1] == 4:
@@ -557,12 +543,12 @@ class Solver(object):
 
                 scale = (detected_faces[2] - detected_faces[0] + detected_faces[3] - detected_faces[1]) / 195
                 inp = self.crop(image, center, scale, resolution=256)
-                print("DETECTED>>>",detected_faces)
+
 
                 io.imsave("cropped_image.png", inp)
                 source_dir = "source_img"
                 os.makedirs(source_dir, exist_ok=True)
-                shutil.move("cropped_image.png", f"source_img/input_image.png")
+                shutil.move("cropped_image.png", "source_img/input_image.png")
 
                 image_inp = Image.open(os.path.join(source_dir, 'input_image.png'))
                 transform = []
@@ -575,6 +561,7 @@ class Solver(object):
 
                 x_real = img_test.to(self.device)
                 x_real = x_real.view(1, 3, 256, 256)
+                print(x_real)
 
                 # Translate images.
                 x_fake_list = []
@@ -587,6 +574,7 @@ class Solver(object):
                     c_trg_m = [self.test_img_attrs]
 
                # c_trg_m = [self.test_img_attrs]
+                print("C_TRG>>>", c_trg_m)
                 c_trg_m = torch.FloatTensor(c_trg_m)
                 c_trg_m.to(self.device)
                 print("C TARGET M>>>", c_trg_m)
