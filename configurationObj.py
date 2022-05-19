@@ -1,5 +1,4 @@
 class ConfigObj(object):
-    """Solver for training and testing StarGAN."""
 
     def __init__(self, test_input_choice,test_input_text,test_img_attrs, image):
       self.c_dim = 5
