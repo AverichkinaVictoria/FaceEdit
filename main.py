@@ -275,4 +275,3 @@ def echo_msg(message):
         picture = image
 
 bot.polling(none_stop=True, interval=0)
-
