@@ -7,14 +7,16 @@
 Обобщенный процесс обучения модели StarGAN выглядит следующим образом:
 
 
-<img src="https://github.com/AverichkinaVictoria/FaceEdit/blob/dev/Screenshots/4.png" width="500">
+<img src="https://github.com/AverichkinaVictoria/FaceEdit/blob/dev/Screenshots/4.png" width="600">
+
+
 
 
 
 Процесс обработки изображения имеет следующую структуру:
 
 
-![Alt text](https://github.com/AverichkinaVictoria/FaceEdit/blob/dev/Screenshots/5.png)
+<img src="https://github.com/AverichkinaVictoria/FaceEdit/blob/dev/Screenshots/5.png" width="600">
 
 
 Таким образом, можно выделить 4 основные фазы обработки изображения:
